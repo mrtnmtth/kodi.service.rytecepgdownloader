@@ -22,7 +22,7 @@ class DOWNLOADER:
             return
         self.upd          = 60/self.len_desc
             
-        self.progress('create', '', 'Rytec EPG Downloader', '', 'Downloading XML Data')
+        self.progress('create', '', 'Rytec EPG Downloader', 'Downloading XML Data')
         self.run()
             
     def get_epg_url(self, description):
@@ -65,7 +65,7 @@ class DOWNLOADER:
     
             common.log('[Rytec EPG Downloader]: '+description)
             self.i += self.upd
-            self.progress('update', self.i, 'Rytec EPG Downloader', description, 'Downloading XML Data')
+            self.progress('update', self.i, 'Rytec EPG Downloader\n' + description + '\nDownloading XML Data', '')
             ret = False
             epg_url = self.get_epg_url(description)
             
@@ -75,13 +75,13 @@ class DOWNLOADER:
             if not ret and not description.startswith('http'):
                 ret = self.run_rytec(description)
                 
-        self.progress('update', 70, 'Merging XML Data', ' ', 'Please Wait...This May Take Awhile')
+        self.progress('update', 70, 'Merging XML Data\n\nPlease Wait...This May Take Awhile', '')
                 
         common.merge_epg()
         common.copy_temp_merged()
         common.delete_temp_merged()
         
-        self.progress('close', '', '', '', '')
+        self.progress('close', '', '', '')
         
         if self.manual:
             if ret:
@@ -89,15 +89,15 @@ class DOWNLOADER:
             else:
                 ok = dialog.ok('Rytec EPG Downloader', 'Manual Download Failed')
             
-    def progress(self, method, i, line1, line2, line3):
+    def progress(self, method, i, line1, line2):
     
         if self.manual:
         
             if method == 'create':
                 self.pDialog = xbmcgui.DialogProgress()
-                self.pDialog.create(line1, line2, line3)
+                self.pDialog.create(line1, line2)
             elif method == 'update':
-                self.pDialog.update(i, line1, line2, line3)
+                self.pDialog.update(i, line1)
             elif method == 'close':
                 self.pDialog.close()
             else:

@@ -8,8 +8,8 @@ import random
 import xbmc
 import xbmcvfs
 import xml.etree.ElementTree as ET
-from StringIO import StringIO
-import common
+from io import StringIO
+from . import common
 
 
 class RYTEC:

@@ -9,12 +9,12 @@ import os
 import sys
 import base64
 import time
-from StringIO import StringIO
+from io import StringIO
 
 id = 'service.rytecepgdownloader'
 addon = xbmcaddon.Addon(id=id)
 
-def log(msg, level=xbmc.LOGNOTICE):
+def log(msg, level=xbmc.LOGINFO):
     xbmc.log(str(msg), level)
 
 def manual_download():
@@ -63,13 +63,13 @@ def get_description_url(description):
     return epg_url
 
 def save_epg_url(epg_url, description):
-    addon.setSetting(description, bencode(epg_url))
+    addon.setSetting(description, epg_url)
 
 def get_xml_path():
-    xml_path = addon.getSetting('path').decode('utf-8')
+    xml_path = addon.getSetting('path')
     if not xml_path:
         addon.openSettings()
-        xml_path = addon.getSetting('path').decode('utf-8')
+        xml_path = addon.getSetting('path')
     return xml_path
 
 def get_merged():
@@ -103,12 +103,12 @@ def get_xml_file(name):
     return xml_file
 
 def bencode(original_string):
-    encoded_string = base64.b64encode(original_string)
-    return encoded_string
+    encoded_string = base64.b64encode(original_string.encode())
+    return encoded_string.decode()
 
 def bdecode(encoded_string):
-    decoded_string = base64.b64decode(encoded_string)
-    return decoded_string
+    decoded_string = base64.b64decode(encoded_string.encode())
+    return decoded_string.decode()
 
 def check_date(file):
     cache_days = 3
@@ -190,10 +190,10 @@ def merge_epg():
                         import lzma
                     except ImportError:
                         from backports import lzma
-                    inF = lzma.open(xbmcvfs.File(os.path.join(xml_path,xmltv)), 'rb')
+                    inF = lzma.open(os.path.join(xml_path,xmltv), 'rb')
                 else:
                     inF = xbmcvfs.File(os.path.join(xml_path,xmltv))
-                b = inF.read()
+                b = inF.read().decode()
                 inF.close()
                 b = b.replace('</tv>','')
                 if i==1:
@@ -217,7 +217,7 @@ def merge_epg():
         f_in = '\n'.join(ltw)
         f_in = f_in+'</tv>'
         f_out = gzip.open(temp_merged, 'wb')
-        f_out.write(f_in)
+        f_out.write(f_in.encode())
         f_out.close()
 
     log('[Rytec EPG Downloader]: merging files done')
