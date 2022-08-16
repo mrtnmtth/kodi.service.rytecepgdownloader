@@ -80,7 +80,7 @@ def get_merged():
     return merged
     
 def get_temp_merged():
-    datapath = xbmc.translatePath('special://temp')
+    datapath = xbmcvfs.translatePath('special://temp')
     temp = os.path.join(datapath,'temp')
     if not xbmcvfs.exists(temp):
         xbmcvfs.mkdir(temp)
